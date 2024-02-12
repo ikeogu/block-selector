@@ -6,9 +6,10 @@ mod block;
 use std::collections::HashMap;
 use crate::transaction::Transaction;
 use crate::block::construct_block;
-use crate::file_io::read_bytes;
 use std::collections::HashSet;
 use std::io;
+use std::fs;
+
 
 fn parse_transaction(line: &str) -> Option<Transaction> {
     let parts: Vec<&str> = line.split(',').collect();
@@ -33,8 +34,7 @@ fn parse_transaction(line: &str) -> Option<Transaction> {
 
 fn read_mempool(filename: &str) -> io::Result<HashMap<String, Transaction>> {
     let mut mempool = HashMap::new();
-    let bytes = read_bytes(filename)?;
-    let content = String::from_utf8_lossy(&bytes);
+    let content = fs::read_to_string(filename)?;
 
     for line in content.lines() {
         if let Some(transaction) = parse_transaction(line) {
