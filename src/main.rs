@@ -1,5 +1,5 @@
 // main.rs
-mod file_io;
+
 mod transaction;
 mod block;
 
@@ -9,6 +9,7 @@ use crate::block::construct_block;
 use std::collections::HashSet;
 use std::io;
 use std::fs;
+
 
 
 fn parse_transaction(line: &str) -> Option<Transaction> {
@@ -32,7 +33,7 @@ fn parse_transaction(line: &str) -> Option<Transaction> {
     })
 }
 
-fn read_mempool(filename: &str) -> io::Result<HashMap<String, Transaction>> {
+ fn read_mempool(filename: &str) -> io::Result<HashMap<String, Transaction>> {
     let mut mempool = HashMap::new();
     let content = fs::read_to_string(filename)?;
 
@@ -45,11 +46,13 @@ fn read_mempool(filename: &str) -> io::Result<HashMap<String, Transaction>> {
     }
 
     Ok(mempool)
-}
+} 
 
+    
 fn main() {
-    let mempool_result = read_mempool("data/mempool.xlsx");
+    let mempool_result = read_mempool("data/mempool.csv");
     let mempool = match mempool_result {
+        
         Ok(mempool) => mempool,
         Err(err) => {
             eprintln!("Error reading mempool: {}", err);
@@ -57,8 +60,11 @@ fn main() {
         }
     };
     
+    
+
     let max_block_weight = 4000000; // Example value, adjust as needed
     let block = construct_block(&mempool, max_block_weight, &HashSet::new());
+    
     for txid in block {
         println!("{}", txid);
     }
